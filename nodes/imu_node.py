@@ -243,9 +243,9 @@ while not rospy.is_shutdown():
         imuMsg.linear_acceleration.y = -float(words[4]) * accel_factor
         imuMsg.linear_acceleration.z = -float(words[5]) * accel_factor
 
-        imuMsg.angular_velocity.x = float(words[6])
+        imuMsg.angular_velocity.x = -float(words[6])
         #in AHRS firmware y axis points right, in ROS y axis points left (see REP 103)
-        imuMsg.angular_velocity.y = -float(words[7])
+        imuMsg.angular_velocity.y = float(words[7])
         #in AHRS firmware z axis points down, in ROS z axis points up (see REP 103) 
         imuMsg.angular_velocity.z = -float(words[8])
 
