@@ -239,9 +239,9 @@ while not rospy.is_shutdown():
         # Publish message
         # AHRS firmware accelerations are negated
         # This means y and z are correct for ROS, but x needs reversing
-        imuMsg.linear_acceleration.x = -float(words[3]) * accel_factor
-        imuMsg.linear_acceleration.y = float(words[4]) * accel_factor
-        imuMsg.linear_acceleration.z = float(words[5]) * accel_factor
+        imuMsg.linear_acceleration.x = float(words[3]) * accel_factor
+        imuMsg.linear_acceleration.y = -float(words[4]) * accel_factor
+        imuMsg.linear_acceleration.z = -float(words[5]) * accel_factor
 
         imuMsg.angular_velocity.x = float(words[6])
         #in AHRS firmware y axis points right, in ROS y axis points left (see REP 103)
