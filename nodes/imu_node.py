@@ -233,8 +233,8 @@ while not rospy.is_shutdown():
             yaw_deg = yaw_deg + 360.0
         yaw = yaw_deg*degrees2rad
         #in AHRS firmware y axis points right, in ROS y axis points left (see REP 103)
-        pitch = -float(words[1])*degrees2rad
-        roll = float(words[2])*degrees2rad
+        pitch = float(words[1])*degrees2rad
+        roll = -float(words[2])*degrees2rad
 
         # Publish message
         # AHRS firmware accelerations are negated
