@@ -1,104 +1,74 @@
-Official ROS Documentation
---------------------------
-A much more extensive and standard ROS-style version of this documentation can be found on the ROS wiki at:
+Note
+----
 
-http://wiki.ros.org/razor_imu_9dof
+This repo provides the ROS driver necessary for the SparkFun 9DoF Razor IMU M0 [SEN-14001](https://www.sparkfun.com/products/14001) to work with ROS. One of the reasons for choosing the Sparkfun 9DoF IMU is that it already has a driver package http://wiki.ros.org/razor_imu_9dof. However the *setup instructions* over there are for an *older version* of the hardware ([SEN-10736](https://www.sparkfun.com/products/retired/10736))
+
+The Razor has an onboard Arduino which runs Attitude Heading Reporting System (AHRS) firmware that works with this ROS driver. ***You have to load the ROS AHRS firmware onto it using the Arduino IDE***. The board as shipped from Sparkfun only contains sensor-value-printing firmware, called the example firmware in the [Sparkfun 9DoF Razor IMU M0 Hookup Guide](https://learn.sparkfun.com/tutorials/9dof-razor-imu-m0-hookup-guide).
+
+The ROS version of the AHRS firmware is in this package, and almost entire code is based on https://github.com/KristofRobot/razor_imu_9dof (***the original repository***). My modifications to the original repo are to ***correct the coordinate system*** so that it follows [REP-103](http://www.ros.org/reps/rep-0103.html), it looks like this (for accelerometer & gyroscope):
+
+<img src="https://user-images.githubusercontent.com/5463437/42996258-a3395982-8c30-11e8-9d2f-aa7c03c09938.jpeg" height="400" width="300"/>
+
+Please see this issue for more details: [KristofRobot#43: Wrong coordinate system for SEN 14001?](https://github.com/KristofRobot/razor_imu_9dof/issues/43#issuecomment-406983411)
+
+More documentation here - https://github.com/KristofRobot/razor_imu_9dof and http://wiki.ros.org/razor_imu_9dof:
 
 
 Install and Configure ROS Package
 ---------------------------------
 1) Install dependencies:
-
-	$ sudo apt-get install python-visual
-
+```
+$ sudo apt-get install python-visual
+```
 2) Download code:
 
-	$ cd ~/catkin_workspace/src
-	$ git clone https://github.com/KristofRobot/razor_imu_9dof.git
-	$ cd ..
-	$ catkin_make
-
+```
+$ cd ~/catkin_workspace/src
+$ git clone https://github.com/KristofRobot/razor_imu_9dof.git
+$ cd ..
+$ catkin_make
+```
 
 Install Arduino firmware
 -------------------------
-1) For SEN-14001 (9DoF Razor IMU M0), you will need to follow the same instructions as for the default firmware on https://learn.sparkfun.com/tutorials/9dof-razor-imu-m0-hookup-guide and use an updated version of SparkFun_MPU-9250-DMP_Arduino_Library from https://github.com/lebarsfa/SparkFun_MPU-9250-DMP_Arduino_Library (an updated version of the default firmware is also available on https://github.com/lebarsfa/9DOF_Razor_IMU).
+For SEN-14001 (9DoF Razor IMU M0), follow the instructions for the default firmware [9DoF Razor IMU M0 Hookup Guide](https://learn.sparkfun.com/tutorials/9dof-razor-imu-m0-hookup-guide) from section:
 
-2) Open ``src/Razor_AHRS/Razor_AHRS.ino`` in Arduino IDE. Note: this is a modified version
+1. [Installing the 9DoF Razor Arduino Core](https://learn.sparkfun.com/tutorials/9dof-razor-imu-m0-hookup-guide#installing-the-9dof-razor-arduino-core) to
+2. [Libraries and Example Firmware](https://learn.sparkfun.com/tutorials/9dof-razor-imu-m0-hookup-guide#libraries-and-example-firmware).
+
+Next, instead of using the [SparkFun MPU-9250 Digital Motion Processing (DMP) library](https://github.com/sparkfun/SparkFun_MPU-9250-DMP_Arduino_Library), one needs to use the updated version from https://github.com/lebarsfa/SparkFun_MPU-9250-DMP_Arduino_Library/releases (basically the zip file of the latest release).
+
+Next, instead of using the example firmware provided by Sparkfun, use the firmware from this repo. The steps to do this are:
+
+1. Open ``src/Razor_AHRS/Razor_AHRS.ino`` in Arduino IDE. Note: this is a modified version
 of Peter Bartz' original Arduino code (see https://github.com/ptrbrtz/razor-9dof-ahrs). 
 Use this version - it emits linear acceleration and angular velocity data required by the ROS Imu message
 
-3) Select your hardware here by uncommenting the right line in ``src/Razor_AHRS/Razor_AHRS.ino``, e.g.
+2. Select your hardware here by uncommenting the right line in ``src/Razor_AHRS/Razor_AHRS.ino``, e.g.
 
 <pre>
 // HARDWARE OPTIONS
 /*****************************************************************/
 // Select your hardware here by uncommenting one line!
-//#define HW__VERSION_CODE 10125 // SparkFun "9DOF Razor IMU" version "SEN-10125" (HMC5843 magnetometer)
-//#define HW__VERSION_CODE 10736 // SparkFun "9DOF Razor IMU" version "SEN-10736" (HMC5883L magnetometer)
 #define HW__VERSION_CODE 14001 // SparkFun "9DoF Razor IMU M0" version "SEN-14001"
-//#define HW__VERSION_CODE 10183 // SparkFun "9DOF Sensor Stick" version "SEN-10183" (HMC5843 magnetometer)
-//#define HW__VERSION_CODE 10321 // SparkFun "9DOF Sensor Stick" version "SEN-10321" (HMC5843 magnetometer)
-//#define HW__VERSION_CODE 10724 // SparkFun "9DOF Sensor Stick" version "SEN-10724" (HMC5883L magnetometer)
 </pre>
 
-4) Upload Arduino sketch to the Sparkfun 9DOF Razor IMU board
+3) Upload Arduino sketch to the Sparkfun 9DOF Razor IMU board
 
 
-Configure
----------
-In its default configuration, ``razor_imu_9dof`` expects a yaml config file ``my_razor.yaml`` with:
-* USB port to use
-* Calibration parameters
+Configuration, Launching and Calibration
+----------------------------------------
+Follow the steps from the [original repository](https://github.com/KristofRobot/razor_imu_9dof) or the [ROS Wiki](http://wiki.ros.org/razor_imu_9dof).
 
-An example``razor.yaml`` file is provided.
-Copy that file to ``my_razor.yaml`` as follows:
+Calibration is very important, otherwise it can lead to wrong yaw measurements as demonstrated in [KristofRobot#43](https://github.com/KristofRobot/razor_imu_9dof/issues/43#issuecomment-406983411). Also see [Troubleshooting: Unstable yaw (aka heading aka azimuth) readings / Yaw drift](https://github.com/Razor-AHRS/razor-9dof-ahrs/wiki/tutorial#unstable-yaw-aka-heading-aka-azimuth-readings--yaw-drift)
 
-    $ roscd razor_imu_9dof/config
-    $ cp razor.yaml my_razor.yaml
+Alternative 3D visualization
+----------------------------
+The original repo uses the package `python-visual` for 3D visualization. This package is not available on Ubuntu 18.04. So I have included a Sketch which can be run using the software [Processing](http://processing.org/). The setup instructions for Processing can be found in the magnetometer calibration section of the [ROS wiki](http://wiki.ros.org/razor_imu_9dof). You can find this sketch in the visualization directory.
 
-Then, edit ``my_razor.yaml`` as needed
+- Open the file [Razor_AHRS_test.pde](visualization/Processing/Razor_AHRS_test/Razor_AHRS_test.pde) using Processing.
+- In Processing:
+  - Go to "Sketch" and hit "Run".
+  - The test sketch should now show the movements of the tracker. If not, have a look at the console at the bottom of the Processing code window. It might tell you why it’s not working. Most likely something is wrong with the serial port. At the top of the code you find a description how to set the correct port.
 
-Launch
-------
-Publisher and 3D visualization:
-
-	$ roslaunch razor_imu_9dof razor-pub-and-display.launch
-
-Publisher only:
-
-	$ roslaunch razor_imu_9dof razor-pub.launch
-
-Publisher only with diagnostics:
-
-	$ roslaunch razor_imu_9dof razor-pub-diags.launch
-
-3D visualization only:
-
-	$ roslaunch razor_imu_9dof razor-display.launch
-
-
-Calibrate
----------
-For best accuracy, follow the tutorial to calibrate the sensors:
-
-http://wiki.ros.org/razor_imu_9dof
-
-An updated version of Peter Bartz's magnetometer calibration scripts from https://github.com/ptrbrtz/razor-9dof-ahrs is provided in the ``magnetometer_calibration`` directory.
-
-Update ``my_razor.yaml`` with the new calibration parameters.
-
-Dynamic Reconfigure
--------------------
-After having launched the publisher with one of the launch commands listed above, 
-it is possible to dynamically reconfigure the yaw calibration.
-
-1) Run:
-
-    $ rosrun rqt_reconfigure rqt_reconfigure 
-    
-2) Select ``imu_node``. 
-
-3) Change the slider to move the calibration +/- 10 degrees. 
-If you are running the 3D visualization you'll see the display jump when the new calibration takes effect.
-
-The intent of this feature is to let you tune the alignment of the AHRS to the direction of the robot driving direction, so that if you can determine that, for example, the AHRS reads 30 degrees when the robot is actually going at 35 degrees as shown by e.g. GPS, you can tune the calibration to make it read 35. It's the compass-equivalent of bore-sighting a camera.
+![image](Processing-Test-Sketch.png)
