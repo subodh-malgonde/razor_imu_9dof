@@ -24,7 +24,7 @@ $ sudo apt-get install python-visual
 
 ```
 $ cd ~/catkin_workspace/src
-$ git clone https://github.com/KristofRobot/razor_imu_9dof.git
+$ git clone https://github.com/subodh-malgonde/razor_imu_9dof.git
 $ cd ..
 $ catkin_make
 ```
