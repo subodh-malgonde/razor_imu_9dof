@@ -71,7 +71,7 @@ Calibration is very important, otherwise it can lead to wrong yaw measurements a
 
 Alternative 3D visualization
 ----------------------------
-The original repo uses the package `python-visual` for 3D visualization. This package is not available on Ubuntu 18.04. So I have included a Sketch which can be run using the software [Processing](http://processing.org/). The setup instructions for Processing can be found in the magnetometer calibration section of the [ROS wiki](http://wiki.ros.org/razor_imu_9dof). You can find this sketch in the visualization directory.
+The original repo uses the package `python-visual` for 3D visualization. This package is not available on Ubuntu 18.04. So I have included a Sketch which can be run using the software [Processing](http://processing.org/). The setup instructions for Processing can be found in the magnetometer calibration section of the [ROS wiki](http://wiki.ros.org/razor_imu_9dof) or in [this tutorial](https://github.com/Razor-AHRS/razor-9dof-ahrs/wiki/tutorial#unstable-yaw-aka-heading-aka-azimuth-readings--yaw-drift). You can find this sketch in the visualization directory.
 
 - Open the file [Razor_AHRS_test.pde](visualization/Processing/Razor_AHRS_test/Razor_AHRS_test.pde) using Processing.
 - In Processing:
