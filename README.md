@@ -5,10 +5,17 @@ This repo provides the ROS driver necessary for the SparkFun 9DoF Razor IMU M0 [
 
 The Razor has an onboard Arduino which runs Attitude Heading Reporting System (AHRS) firmware that works with this ROS driver. ***You have to load the ROS AHRS firmware onto it using the Arduino IDE***. The board as shipped from Sparkfun only contains sensor-value-printing firmware, called the example firmware in the [Sparkfun 9DoF Razor IMU M0 Hookup Guide](https://learn.sparkfun.com/tutorials/9dof-razor-imu-m0-hookup-guide).
 
-The ROS version of the AHRS firmware is in this package, and almost entire code is based on https://github.com/KristofRobot/razor_imu_9dof (***the original repository***). My modifications to the original repo are to ***correct the coordinate system*** so that it follows [REP-103](http://www.ros.org/reps/rep-0103.html), it looks like this (for accelerometer & gyroscope):
+The ROS version of the AHRS firmware is in this package, and almost entire code is based on https://github.com/KristofRobot/razor_imu_9dof (***the original repository***). ~~My modifications to the original repo are to ***correct the coordinate system*** so that it follows [REP-103](http://www.ros.org/reps/rep-0103.html), it looks like this (for accelerometer & gyroscope)~~:
 
 <img src="https://user-images.githubusercontent.com/5463437/42996258-a3395982-8c30-11e8-9d2f-aa7c03c09938.jpeg" height="400" width="300"/>
 
+**UPDATE**: It turns out IMUs measure acceleration opposite of gravitational acceleration in the static state. Please see these posts:
+
+ 1. [IMU convention for robot_localization](https://answers.ros.org/question/269030/imu-convention-for-robot_localization/)
+ 2. [Why do 3-axis accelerometers seemingly have a left-handed coordinate system?](https://robotics.stackexchange.com/questions/1858/why-do-3-axis-accelerometers-seemingly-have-a-left-handed-coordinate-system)
+3. [IMU data to be used with robot_localization](https://answers.ros.org/question/298415/imu-data-to-be-used-with-robot_localization/?answer=298438#post-id-298438)
+
+So the `razor_imu_9dof` package provides data in the right format. ***No changes are required to the code.***
 Please see this issue for more details: [KristofRobot#43: Wrong coordinate system for SEN 14001?](https://github.com/KristofRobot/razor_imu_9dof/issues/43#issuecomment-406983411)
 
 More documentation here - https://github.com/KristofRobot/razor_imu_9dof and http://wiki.ros.org/razor_imu_9dof:
