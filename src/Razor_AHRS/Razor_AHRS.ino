@@ -295,8 +295,8 @@ float MAGN_Z_MAX = 600;
 //float magn_ellipsoid_transform[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
 
 boolean CALIBRATION__MAGN_USE_EXTENDED = true;
-float magn_ellipsoid_center[3] = {176.827, -552.229, -709.010};
-float magn_ellipsoid_transform[3][3] = {{0.997377, 0.00131523, 0.0107308}, {0.00131523, 0.978489, -0.00626317}, {0.0107308, -0.00626317, 0.956056}};
+float magn_ellipsoid_center[3] = {239.356, -540.993, -699.875};
+float magn_ellipsoid_transform[3][3] = {{0.601114, -0.0282154, -0.0538970}, {-0.0282154, 0.869676, 0.169191}, {-0.0538970, 0.169191, 0.759487}};
 
 // Gyroscope
 // "gyro x,y,z (current/average) = .../OFFSET_X  .../OFFSET_Y  .../OFFSET_Z
